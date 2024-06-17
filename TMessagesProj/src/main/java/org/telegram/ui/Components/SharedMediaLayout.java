@@ -121,7 +121,7 @@ import kotlin.Unit;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.utils.AlertUtil;
-import tw.nekomimi.nekogram.utils.ProxyUtil;
+import tw.nekomimi.nekogram.utils.QrUtil;
 
 @SuppressWarnings("unchecked")
 public class SharedMediaLayout extends FrameLayout implements NotificationCenter.NotificationCenterDelegate {
@@ -1561,7 +1561,7 @@ public class SharedMediaLayout extends FrameLayout implements NotificationCenter
             actionModeViews.add(gotoItem);
             gotoItem.setOnClickListener(v -> onActionBarItemClick(v, gotochat));
 
-            forwardNoQuoteItem = new ActionBarMenuItem(context, null, Theme.getColor(Theme.key_actionBarActionModeDefaultSelector), Theme.getColor(Theme.key_windowBackgroundWhiteGrayText2), false);
+            forwardNoQuoteItem = new ActionBarMenuItem(context, null, Theme.getColor(Theme.key_actionBarActionModeDefaultSelector), Theme.getColor(Theme.key_actionBarActionModeDefaultIcon), false);
             forwardNoQuoteItem.setIcon(R.drawable.baseline_fast_forward_24);
             forwardNoQuoteItem.setContentDescription(LocaleController.getString("NoQuoteForward", R.string.NoQuoteForward));
             forwardNoQuoteItem.setDuplicateParentStateEnabled(false);
@@ -4961,7 +4961,7 @@ public class SharedMediaLayout extends FrameLayout implements NotificationCenter
                                 if (which == 0) {
                                     openUrl(urlFinal);
                                 } else {
-                                    ProxyUtil.showQrDialog(profileActivity.getParentActivity(), urlFinal);
+                                    QrUtil.showQrDialog(profileActivity.getParentActivity(), urlFinal);
                                 }
                             } else if (which == 1) {
                                 String url1 = urlFinal;
@@ -6603,7 +6603,7 @@ public class SharedMediaLayout extends FrameLayout implements NotificationCenter
             arrayList.add(new ThemeDescription(gotoItem, ThemeDescription.FLAG_BACKGROUNDFILTER, null, null, null, null, Theme.key_actionBarActionModeDefaultSelector));
         }
         if (forwardNoQuoteItem != null) {
-            arrayList.add(new ThemeDescription(forwardNoQuoteItem.getIconView(), ThemeDescription.FLAG_IMAGECOLOR, null, null, null, null, Theme.key_windowBackgroundWhiteGrayText2));
+            arrayList.add(new ThemeDescription(forwardNoQuoteItem.getIconView(), ThemeDescription.FLAG_IMAGECOLOR, null, null, null, null, Theme.key_actionBarActionModeDefaultIcon));
             arrayList.add(new ThemeDescription(forwardNoQuoteItem, ThemeDescription.FLAG_BACKGROUNDFILTER, null, null, null, null, Theme.key_actionBarActionModeDefaultSelector));
         }
         if (forwardItem != null) {

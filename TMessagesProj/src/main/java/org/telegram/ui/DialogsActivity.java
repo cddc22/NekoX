@@ -215,7 +215,7 @@ import tw.nekomimi.nekogram.InternalUpdater;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.utils.PrivacyUtil;
-import tw.nekomimi.nekogram.utils.ProxyUtil;
+import tw.nekomimi.nekogram.utils.QrUtil;
 import tw.nekomimi.nekogram.utils.UIUtil;
 import tw.nekomimi.nekogram.utils.UpdateUtil;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
@@ -5350,7 +5350,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
                         @Override
                         public void didFindQr(String text) {
-                            ProxyUtil.showLinkAlert(getParentActivity(), text);
+                            QrUtil.showLinkAlert(getParentActivity(), text);
                         }
 
                         @Override
@@ -6699,6 +6699,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                             TLRPC.Document sticker = getMediaDataController().getGreetingsSticker();
                             if (sticker != null) {
                                 chatActivity.setPreloadedSticker(sticker, true);
+                            }
+                        }
+                        if (AndroidUtilities.isTablet()) {
+                            if (rightSlidingDialogContainer.currentFragment != null) {
+                                rightSlidingDialogContainer.finishPreview();
                             }
                         }
                         presentFragment(chatActivity);
@@ -8713,13 +8718,15 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         } else if (id == NotificationCenter.dialogsUnreadReactionsCounterChanged) {
             updateVisibleRows(0);
         } else if (id == NotificationCenter.emojiLoaded) {
-            for (int i = 0; i < viewPages.length; ++i) {
-                final RecyclerListView listView = viewPages[i].listView;
-                if (listView != null) {
-                    for (int a = 0; a < listView.getChildCount(); ++a) {
-                        View child = listView.getChildAt(a);
-                        if (child != null) {
-                            child.invalidate();
+            if (viewPages != null) {
+                for (int i = 0; i < viewPages.length; ++i) {
+                    final RecyclerListView listView = viewPages[i].listView;
+                    if (listView != null) {
+                        for (int a = 0; a < listView.getChildCount(); ++a) {
+                            View child = listView.getChildAt(a);
+                            if (child != null) {
+                                child.invalidate();
+                            }
                         }
                     }
                 }
@@ -8832,7 +8839,16 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             long dialogId = (Long) args[0];
             TLRPC.User user = (TLRPC.User) args[1];
             TLRPC.Chat chat = (TLRPC.Chat) args[2];
-            boolean revoke = (Boolean) args[3];
+            boolean revoke;
+            boolean botBlock;
+            if (user != null && user.bot) {
+                revoke = false;
+                botBlock = (Boolean) args[3];
+            } else {
+                revoke = (Boolean) args[3];
+                botBlock = false;
+            }
+
             Runnable deleteRunnable = () -> {
                 if (chat != null) {
                     if (ChatObject.isNotInChat(chat)) {
@@ -8842,7 +8858,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     }
                 } else {
                     getMessagesController().deleteDialog(dialogId, 0, revoke);
-                    if (user != null && user.bot) {
+                    if (user != null && user.bot && botBlock) {
                         getMessagesController().blockPeer(user.id);
                     }
                 }

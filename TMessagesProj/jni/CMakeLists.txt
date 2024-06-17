@@ -348,6 +348,7 @@ add_library(webp STATIC
         libwebp/src/dsp/filters_neon.c
         libwebp/src/dsp/filters_sse2.c
         libwebp/src/dsp/lossless.c
+        libwebp/src/dsp/lossless_sse41.c
         libwebp/src/dsp/lossless_mips_dsp_r2.c
         libwebp/src/dsp/lossless_msa.c
         libwebp/src/dsp/lossless_neon.c
@@ -493,7 +494,7 @@ target_include_directories(breakpad PUBLIC
 #voip
 include(${CMAKE_HOME_DIRECTORY}/voip/CMakeLists.txt)
 
-set(NATIVE_LIB "tmessages.43")
+set(NATIVE_LIB "tmessages.44")
 
 #tmessages
 add_library(${NATIVE_LIB} SHARED
